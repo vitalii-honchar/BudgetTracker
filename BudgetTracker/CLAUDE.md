@@ -6,6 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Budget Tracker is a native iOS application for tracking personal expenses.
 
+## Documentation
+
+All project documentation is located in `docs/`:
+- **001-requirements.md**: Product requirements and feature specifications
+- **002-architecture.md**: Clean Architecture + DDD design with layer structure
+- **003-database-schema.md**: Core Data schema, relationships, and migrations
+- **004-ui-design.md**: UI/UX design guidelines and components
+- **CURRENT_TODO.md**: Active work and tasks (working memory)
+- **HISTORY_TODO.md**: Completed work log (project timeline)
+
+When starting work, read `docs/CURRENT_TODO.md` to understand current tasks and context.
+
 ## Building and Running
 
 ### Build the Project
