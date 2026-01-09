@@ -157,11 +157,17 @@
 - ✅ **CategoryRepository.swift**: Category management with usage statistics
 - ✅ **ExpensePeriodRepository.swift**: Period operations with overlap validation
 
-### Unit Tests (4 files, ~600 lines)
+### Unit Tests - Value Objects (4 files, ~600 lines)
 - ✅ **MoneyTests.swift**: 25+ test cases covering all Money operations
 - ✅ **DateRangeTests.swift**: 15+ test cases for date range operations
 - ✅ **CurrencyTests.swift**: Symbol, name, decimal places validation
 - ✅ **TransactionCategoryTests.swift**: Icon, color, sort order, lookup tests
+
+### Unit Tests - Entities (4 files, ~800 lines)
+- ✅ **CategoryTests.swift**: 20+ test cases (initialization, validation, mutations, business logic)
+- ✅ **TransactionTests.swift**: 30+ test cases (CRUD, validation, business rules, comparisons)
+- ✅ **ExpensePeriodTests.swift**: 25+ test cases (factory methods, mutations, overlaps, status checks)
+- ✅ **SpendingReportTests.swift**: 20+ test cases (generation, aggregation, summaries)
 
 ### Documentation & CI/CD
 - ✅ Updated **CLAUDE.md** with task management workflow
@@ -170,9 +176,18 @@
 - ✅ Created **GitHub Actions workflow** for CI/CD
 
 ### Statistics
-- **Lines of Code**: ~1,800 new lines (Domain layer + tests)
-- **Files Created**: 15 Swift files (11 production + 4 test files)
-- **Test Coverage**: Value Objects at 90%+ coverage
+- **Lines of Code**: ~2,600 new lines (Domain layer + comprehensive tests)
+- **Files Created**: 19 Swift files (11 production + 8 test files)
+- **Test Cases**: 95+ comprehensive unit tests
+- **Test Coverage**: Expected 90%+ coverage for entire Domain layer
 - **Zero Dependencies**: Domain layer is pure Swift
+
+### Key Test Coverage
+- **MoneyTests**: Arithmetic, validation, comparison, formatting (25 tests)
+- **DateRangeTests**: Ranges, factory methods, containment (15 tests)
+- **CategoryTests**: Validation, mutations, business logic (20 tests)
+- **TransactionTests**: CRUD, validation, business rules (30 tests)
+- **ExpensePeriodTests**: Factory methods, overlaps, status (25 tests)
+- **SpendingReportTests**: Generation, aggregation, analytics (20 tests)
 
 ---

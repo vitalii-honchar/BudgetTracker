@@ -31,16 +31,18 @@
   - ExpensePeriodRepository.swift (Period operations)
   - Status: ✅ Complete
 
-### In Progress
-- [ ] Write comprehensive unit tests for Domain Entities
-  - TransactionTests.swift (pending)
-  - CategoryTests.swift (pending)
-  - ExpensePeriodTests.swift (pending)
-  - SpendingReportTests.swift (pending)
+### Recently Completed
+- [x] Write comprehensive unit tests for Domain Entities
+  - CategoryTests.swift (20+ test cases) ✅
+  - TransactionTests.swift (30+ test cases) ✅
+  - ExpensePeriodTests.swift (25+ test cases) ✅
+  - SpendingReportTests.swift (20+ test cases) ✅
 
-### Up Next - Phase 1 (Final Tasks)
-- [ ] Run all Domain layer tests to verify 90%+ coverage
-- [ ] Update documentation with Domain layer completion
+### Next Steps
+- [ ] Add Domain layer files to Xcode project
+- [ ] Run all Domain layer tests to verify they compile and pass
+- [ ] Verify 90%+ test coverage for Domain layer
+- [ ] Mark Phase 1 as 100% complete
 
 ### Up Next - Phase 2: Data Layer
 - [ ] Update Core Data model with 3 entities
