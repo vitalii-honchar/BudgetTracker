@@ -19,6 +19,47 @@ All project documentation is located in `docs/`:
 
 When starting work, read `docs/CURRENT_TODO.md` to understand current tasks and context.
 
+## Task Management
+
+**IMPORTANT**: All todo items MUST be tracked in `docs/CURRENT_TODO.md`, NOT in the TodoWrite tool.
+
+### Workflow
+
+1. **Read** `docs/CURRENT_TODO.md` at the start of work
+2. **Update** `docs/CURRENT_TODO.md` after completing each task:
+   - Mark completed items with `[x]` checkbox
+   - Move completed items to `docs/HISTORY_TODO.md`
+   - Update progress percentages
+3. **Run tests** after each completion to verify:
+   - New code works as expected
+   - Existing functionality is not broken
+4. **Completion Criteria**: A task is ONLY considered complete when:
+   - Implementation is finished
+   - Unit/integration tests are written
+   - All tests pass successfully
+   - Code follows Clean Architecture principles
+
+### Test Execution
+
+After completing each task, run appropriate tests:
+```bash
+# Run all tests
+xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+
+# Run specific test suite
+xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -only-testing:BudgetTrackerTests/Domain
+
+# Run specific test class
+xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -only-testing:BudgetTrackerTests/MoneyTests
+```
+
+### Documentation Updates
+
+When completing major phases, update:
+- `docs/CURRENT_TODO.md`: Move completed items to history
+- `docs/HISTORY_TODO.md`: Record what was accomplished with timestamps
+- This file (CLAUDE.md): If workflow changes
+
 ## Testing
 
 Follow the testing pyramid approach documented in `docs/005-testing.md`:

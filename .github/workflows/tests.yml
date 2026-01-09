@@ -1,0 +1,117 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: macos-14
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Select Xcode version
+      run: sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
+
+    - name: Show Xcode version
+      run: xcodebuild -version
+
+    - name: Show available simulators
+      run: xcrun simctl list devices available
+
+    - name: Build project
+      working-directory: ./BudgetTracker
+      run: |
+        xcodebuild clean build \
+          -scheme BudgetTracker \
+          -project BudgetTracker.xcodeproj \
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=17.2' \
+          CODE_SIGNING_ALLOWED=NO
+
+    - name: Run unit tests
+      working-directory: ./BudgetTracker
+      run: |
+        xcodebuild test \
+          -scheme BudgetTracker \
+          -project BudgetTracker.xcodeproj \
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=17.2' \
+          -only-testing:BudgetTrackerTests \
+          -enableCodeCoverage YES \
+          CODE_SIGNING_ALLOWED=NO
+
+    - name: Run UI tests
+      working-directory: ./BudgetTracker
+      run: |
+        xcodebuild test \
+          -scheme BudgetTracker \
+          -project BudgetTracker.xcodeproj \
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=17.2' \
+          -only-testing:BudgetTrackerUITests \
+          CODE_SIGNING_ALLOWED=NO
+      continue-on-error: true  # UI tests might not exist yet
+
+    - name: Generate coverage report
+      if: always()
+      working-directory: ./BudgetTracker
+      run: |
+        xcrun xccov view --report --only-targets \
+          $(find ~/Library/Developer/Xcode/DerivedData -name '*.xcresult' | head -1) \
+          || echo "Coverage report generation skipped"
+      continue-on-error: true
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: |
+          ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+        retention-days: 7
+      continue-on-error: true
+
+  lint:
+    name: SwiftLint
+    runs-on: macos-14
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install SwiftLint
+      run: brew install swiftlint
+
+    - name: Run SwiftLint
+      working-directory: ./BudgetTracker
+      run: swiftlint lint --reporter github-actions-logging
+      continue-on-error: true  # Don't fail build on lint warnings
+
+  build-matrix:
+    name: Build on Multiple Platforms
+    runs-on: macos-14
+    strategy:
+      matrix:
+        destination:
+          - 'platform=iOS Simulator,name=iPhone 16 Pro,OS=17.2'
+          - 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=17.2'
+          - 'platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation),OS=17.2'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Select Xcode version
+      run: sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
+
+    - name: Build for ${{ matrix.destination }}
+      working-directory: ./BudgetTracker
+      run: |
+        xcodebuild clean build \
+          -scheme BudgetTracker \
+          -project BudgetTracker.xcodeproj \
+          -destination '${{ matrix.destination }}' \
+          CODE_SIGNING_ALLOWED=NO
