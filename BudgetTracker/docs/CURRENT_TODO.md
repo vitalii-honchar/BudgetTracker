@@ -23,28 +23,28 @@
 ### Phase 1: Domain Layer (0/5 complete)
 
 #### Task 1.1: Create Currency Value Object
-- [ ] Create `BudgetTracker/Domain/ValueObjects/Currency.swift`
-- [ ] Implement as enum with cases: USD, EUR, GBP, JPY, UAH
-- [ ] Add symbol property (e.g., "$", "€", "£", "¥", "₴")
-- [ ] Add ISO code property
-- [ ] Create `BudgetTrackerTests/Domain/ValueObjects/CurrencyTests.swift`
+- [x] Create `BudgetTracker/Domain/Currency.swift`
+- [x] Implement as enum with cases: USD, EUR, GBP, JPY, UAH
+- [x] Add symbol property (e.g., "$", "€", "£", "¥", "₴")
+- [x] Add ISO code property
+- [ ] Create `BudgetTrackerTests/Domain/CurrencyTests.swift`
 - [ ] Write unit tests (5-10 test cases)
 - [ ] Run tests and verify all pass
 - [ ] Commit: "Add Currency value object with tests"
 
 #### Task 1.2: Create Money Value Object
-- [ ] Create `BudgetTracker/Domain/ValueObjects/Money.swift`
+- [ ] Create `BudgetTracker/Domain/Money.swift`
 - [ ] Implement struct with `amount: Decimal` and `currency: Currency`
 - [ ] Add arithmetic operations: add, subtract (with currency validation)
 - [ ] Add comparison operations (equals, lessThan, greaterThan)
 - [ ] Add validation (no negative amounts)
-- [ ] Create `BudgetTrackerTests/Domain/ValueObjects/MoneyTests.swift`
+- [ ] Create `BudgetTrackerTests/Domain/MoneyTests.swift`
 - [ ] Write unit tests (15-20 test cases covering arithmetic, validation, edge cases)
 - [ ] Run tests and verify all pass
 - [ ] Commit: "Add Money value object with arithmetic and tests"
 
 #### Task 1.3: Create Category Entity
-- [ ] Create `BudgetTracker/Domain/Entities/Category.swift`
+- [ ] Create `BudgetTracker/Domain/Category.swift`
 - [ ] Implement as enum with predefined categories:
   - `food` (icon: "cart.fill", color: "#FF6B6B")
   - `transport` (icon: "car.fill", color: "#4ECDC4")
@@ -54,13 +54,13 @@
   - `health` (icon: "heart.fill", color: "#FF6B9D")
   - `other` (icon: "ellipsis.circle.fill", color: "#95A5A6")
 - [ ] Add properties: name, icon (SF Symbol), colorHex
-- [ ] Create `BudgetTrackerTests/Domain/Entities/CategoryTests.swift`
+- [ ] Create `BudgetTrackerTests/Domain/CategoryTests.swift`
 - [ ] Write unit tests (5-10 test cases)
 - [ ] Run tests and verify all pass
 - [ ] Commit: "Add Category entity with predefined categories and tests"
 
 #### Task 1.4: Create Transaction Entity
-- [ ] Create `BudgetTracker/Domain/Entities/Transaction.swift`
+- [ ] Create `BudgetTracker/Domain/Transaction.swift`
 - [ ] Implement struct with properties:
   - `id: UUID`
   - `money: Money`
@@ -72,117 +72,102 @@
   - `updatedAt: Date`
 - [ ] Add validation in initializer
 - [ ] Add custom errors: `TransactionError` enum
-- [ ] Create `BudgetTrackerTests/Domain/Entities/TransactionTests.swift`
+- [ ] Create `BudgetTrackerTests/Domain/TransactionTests.swift`
 - [ ] Write unit tests (20-25 test cases covering validation, edge cases)
 - [ ] Run tests and verify all pass
 - [ ] Commit: "Add Transaction entity with validation and tests"
 
-#### Task 1.5: Create TransactionRepository Protocol
-- [ ] Create `BudgetTracker/Domain/RepositoryProtocols/TransactionRepository.swift`
+#### Task 1.5: Create Core Data Model
+- [ ] Create `BudgetTracker/Domain/BudgetTracker.xcdatamodeld` (in Domain layer)
+- [ ] Add `TransactionEntity` with attributes
+- [ ] Set code generation to "Manual/None"
+- [ ] Generate NSManagedObject subclass in Domain layer
+- [ ] Commit: "Add Core Data model in Domain layer"
+
+---
+
+### Phase 2: Application Layer (0/3 complete)
+
+#### Task 2.1: Create TransactionRepository Protocol
+- [ ] Create `BudgetTracker/Application/TransactionRepository.swift`
 - [ ] Define protocol with methods:
   - `create(transaction: Transaction) async throws -> Transaction`
   - `findAll() async throws -> [Transaction]`
 - [ ] Add repository errors: `RepositoryError` enum
 - [ ] No tests needed (protocol only)
-- [ ] Commit: "Add TransactionRepository protocol"
+- [ ] Commit: "Add TransactionRepository protocol in Application layer"
 
----
-
-### Phase 2: Data Layer (0/4 complete)
-
-#### Task 2.1: Create Core Data Model
-- [ ] Create `BudgetTracker/Data/CoreData/BudgetTracker.xcdatamodeld`
-- [ ] Add `TransactionEntity` with attributes:
-  - `id: UUID`
-  - `amount: Decimal`
-  - `currencyCode: String`
-  - `name: String`
-  - `categoryRawValue: String`
-  - `date: Date`
-  - `transactionDescription: String?` (optional)
-  - `createdAt: Date`
-  - `updatedAt: Date`
-- [ ] Add indexes on `date` and `categoryRawValue`
-- [ ] Set code generation to "Manual/None"
-- [ ] Generate NSManagedObject subclass manually
-- [ ] Commit: "Add Core Data model with TransactionEntity"
-
-#### Task 2.2: Create CoreDataStack
-- [ ] Create `BudgetTracker/Data/CoreData/CoreDataStack.swift`
-- [ ] Implement with NSPersistentContainer (local only, no CloudKit)
-- [ ] Add error handling for store loading
-- [ ] Add convenience properties: `viewContext`, `backgroundContext`
-- [ ] Create `BudgetTrackerTests/Data/TestHelpers/InMemoryCoreDataStack.swift`
-- [ ] Implement in-memory stack for testing
-- [ ] Commit: "Add CoreDataStack with in-memory test helper"
-
-#### Task 2.3: Create TransactionMapper
-- [ ] Create `BudgetTracker/Data/Mappers/TransactionMapper.swift`
-- [ ] Implement `toDomain(entity: TransactionEntity) throws -> Transaction`
-- [ ] Implement `toEntity(transaction: Transaction, context: NSManagedObjectContext) -> TransactionEntity`
-- [ ] Add mapping error handling
-- [ ] Create `BudgetTrackerTests/Data/Mappers/TransactionMapperTests.swift`
-- [ ] Write integration tests (10-15 test cases)
-- [ ] Run tests and verify all pass
-- [ ] Commit: "Add TransactionMapper with bidirectional mapping and tests"
-
-#### Task 2.4: Implement CoreDataTransactionRepository
-- [ ] Create `BudgetTracker/Data/Repositories/CoreDataTransactionRepository.swift`
-- [ ] Implement `TransactionRepository` protocol
-- [ ] Implement `create(transaction:)` method with Core Data save
-- [ ] Implement `findAll()` method with fetch request (sorted by date descending)
-- [ ] Add error handling and logging
-- [ ] Create `BudgetTrackerTests/Data/Repositories/CoreDataTransactionRepositoryTests.swift`
-- [ ] Write integration tests using in-memory stack (10-15 test cases)
-- [ ] Run tests and verify all pass
-- [ ] Commit: "Add CoreDataTransactionRepository implementation with tests"
-
----
-
-### Phase 3: Application Layer (0/2 complete)
-
-#### Task 3.1: Create CreateTransactionUseCase
-- [ ] Create `BudgetTracker/Application/UseCases/Transaction/CreateTransactionUseCase.swift`
+#### Task 2.2: Create CreateTransactionUseCase
+- [ ] Create `BudgetTracker/Application/CreateTransactionUseCase.swift`
 - [ ] Implement with dependency on `TransactionRepository`
 - [ ] Add `execute(transaction: Transaction) async throws -> Transaction` method
-- [ ] Add business logic validation (if any beyond domain)
-- [ ] Create `BudgetTrackerTests/Application/UseCases/Transaction/CreateTransactionUseCaseTests.swift`
 - [ ] Create `BudgetTrackerTests/Application/Mocks/MockTransactionRepository.swift`
+- [ ] Create `BudgetTrackerTests/Application/CreateTransactionUseCaseTests.swift`
 - [ ] Write unit tests with mocked repository (10-15 test cases)
 - [ ] Run tests and verify all pass
 - [ ] Commit: "Add CreateTransactionUseCase with tests"
 
-#### Task 3.2: Create GetTransactionsUseCase
-- [ ] Create `BudgetTracker/Application/UseCases/Transaction/GetTransactionsUseCase.swift`
+#### Task 2.3: Create GetTransactionsUseCase
+- [ ] Create `BudgetTracker/Application/GetTransactionsUseCase.swift`
 - [ ] Implement with dependency on `TransactionRepository`
 - [ ] Add `execute() async throws -> [Transaction]` method
-- [ ] Return transactions sorted by date (newest first)
-- [ ] Create `BudgetTrackerTests/Application/UseCases/Transaction/GetTransactionsUseCaseTests.swift`
+- [ ] Create `BudgetTrackerTests/Application/GetTransactionsUseCaseTests.swift`
 - [ ] Write unit tests with mocked repository (8-10 test cases)
 - [ ] Run tests and verify all pass
 - [ ] Commit: "Add GetTransactionsUseCase with tests"
 
 ---
 
-### Phase 4: Infrastructure + Presentation (0/2 complete)
+### Phase 3: Infrastructure Layer (0/4 complete)
 
-#### Task 4.1: Setup Infrastructure
-- [ ] Create `BudgetTracker/Infrastructure/DependencyInjection/DependencyContainer.swift`
+#### Task 3.1: Create CoreDataStack
+- [ ] Create `BudgetTracker/Infrastructure/CoreDataStack.swift`
+- [ ] Implement with NSPersistentContainer (local only, no CloudKit)
+- [ ] Add error handling for store loading
+- [ ] Add convenience properties: `viewContext`, `backgroundContext`
+- [ ] Create `BudgetTrackerTests/Infrastructure/InMemoryCoreDataStack.swift`
+- [ ] Implement in-memory stack for testing
+- [ ] Commit: "Add CoreDataStack with in-memory test helper"
+
+#### Task 3.2: Create TransactionMapper
+- [ ] Create `BudgetTracker/Infrastructure/TransactionMapper.swift`
+- [ ] Implement `toDomain(entity: TransactionEntity) throws -> Transaction`
+- [ ] Implement `toEntity(transaction: Transaction, context: NSManagedObjectContext) -> TransactionEntity`
+- [ ] Add mapping error handling
+- [ ] Create `BudgetTrackerTests/Infrastructure/TransactionMapperTests.swift`
+- [ ] Write integration tests (10-15 test cases)
+- [ ] Run tests and verify all pass
+- [ ] Commit: "Add TransactionMapper with bidirectional mapping and tests"
+
+#### Task 3.3: Implement CoreDataTransactionRepository
+- [ ] Create `BudgetTracker/Infrastructure/CoreDataTransactionRepository.swift`
+- [ ] Implement `TransactionRepository` protocol
+- [ ] Implement `create(transaction:)` method with Core Data save
+- [ ] Implement `findAll()` method with fetch request (sorted by date descending)
+- [ ] Add error handling and logging
+- [ ] Create `BudgetTrackerTests/Infrastructure/CoreDataTransactionRepositoryTests.swift`
+- [ ] Write integration tests using in-memory stack (10-15 test cases)
+- [ ] Run tests and verify all pass
+- [ ] Commit: "Add CoreDataTransactionRepository implementation with tests"
+
+#### Task 3.4: Setup Dependency Injection
+- [ ] Create `BudgetTracker/Infrastructure/DependencyContainer.swift`
 - [ ] Initialize CoreDataStack
 - [ ] Create repository instances
 - [ ] Create use case instances
 - [ ] Expose via singleton or environment
-- [ ] Create `BudgetTracker/Infrastructure/Seeding/CategorySeeder.swift`
-- [ ] Add method to verify all predefined categories exist
 - [ ] Update `BudgetTracker/BudgetTrackerApp.swift`:
   - Remove SwiftData imports
   - Initialize DependencyContainer
   - Inject dependencies into environment
-  - Call CategorySeeder on first launch
 - [ ] Verify app builds successfully
-- [ ] Commit: "Setup infrastructure with DI container and app initialization"
+- [ ] Commit: "Setup infrastructure with DI container"
 
-#### Task 4.2: Create Presentation Layer
+---
+
+### Phase 4: Presentation Layer (0/1 complete)
+
+#### Task 4.1: Create Presentation Layer
 - [ ] Create `BudgetTracker/Presentation/ViewModels/TransactionListViewModel.swift`
   - Properties: `transactions: [Transaction]`, `isLoading: Bool`, `errorMessage: String?`
   - Method: `loadTransactions()` using GetTransactionsUseCase
@@ -266,11 +251,10 @@ Before marking iteration complete, verify:
 - **Fast feedback**: Test on device after each iteration
 
 ### Architecture Reminder
-- **Domain Layer**: Zero dependencies, pure Swift, business logic
-- **Data Layer**: Core Data persistence, mappers
-- **Application Layer**: Use cases orchestrating domain + repositories
-- **Presentation Layer**: SwiftUI views + ViewModels
-- **Infrastructure Layer**: DI, seeding, app initialization
+- **Domain Layer**: Value objects (Money, Currency), Entities (Transaction, Category), Core Data models (TransactionEntity)
+- **Application Layer**: Use cases + Repository protocols (interfaces)
+- **Infrastructure Layer**: Repository implementations, CoreDataStack, Mappers, DI
+- **Presentation Layer**: SwiftUI Views + ViewModels
 
 ### Blocked
 - None
