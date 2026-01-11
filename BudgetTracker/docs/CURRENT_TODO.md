@@ -138,9 +138,139 @@
 - ✅ Updated CLAUDE.md with Testing Pyramid requirements
 
 **Next Steps**:
-1. Test on physical iPhone 16 Pro device
-2. Verify complete flow: Launch → Add Transaction (with currency) → View in List
-3. If approved, proceed to Iteration 2 (Edit/Delete transactions)
+1. ✅ Test fixes committed and pushed
+2. ✅ Proceed to Iteration 2 implementation
+
+---
+
+## Iteration 2: Edit & Delete Transactions (0/8 tasks complete)
+
+**Goal**: Deliver working app where users can edit existing transactions and delete them.
+
+**Completion Criteria**:
+- ⏳ Can tap on transaction in list to edit
+- ⏳ Can modify all transaction fields (amount, name, currency, category, date, description)
+- ⏳ Can save edited transaction
+- ⏳ Changes persist and appear in list
+- ⏳ Can delete transaction with swipe gesture
+- ⏳ Confirmation dialog before delete
+- ⏳ All tests pass (Unit + Integration + E2E)
+- ⏳ App builds and runs on device
+
+---
+
+### Phase 1: Domain Layer - No Changes Needed ✅
+All domain entities (Transaction, Money, Category, Currency) already support editing since they're immutable value types. No changes required.
+
+### Phase 2: Application Layer (2/2 tasks)
+
+#### Task 2.1: Create UpdateTransactionUseCase
+- [ ] Interface: `execute(transaction: Transaction) async throws -> Transaction`
+- [ ] Implementation with repository call
+- [ ] Unit tests (6+ tests):
+  - Update with valid data succeeds
+  - Update with invalid ID throws error
+  - Update with validation errors throws
+  - Repository error propagates
+  - Updated transaction returned
+  - Timestamps updated correctly
+
+#### Task 2.2: Create DeleteTransactionUseCase
+- [ ] Interface: `execute(id: UUID) async throws`
+- [ ] Implementation with repository call
+- [ ] Unit tests (5+ tests):
+  - Delete existing transaction succeeds
+  - Delete non-existent ID throws error
+  - Repository error propagates
+  - Verify deletion called repository
+
+### Phase 3: Infrastructure Layer (2/2 tasks)
+
+#### Task 3.1: Extend TransactionRepository Protocol
+- [ ] Add `update(transaction: Transaction) async throws -> Transaction`
+- [ ] Add `delete(id: UUID) async throws`
+- [ ] Update MockTransactionRepository
+
+#### Task 3.2: Implement Update & Delete in CoreDataTransactionRepository
+- [ ] Implement update() method:
+  - Find entity by ID
+  - Update all fields using mapper
+  - Save context
+  - Return updated domain model
+- [ ] Implement delete() method:
+  - Find entity by ID
+  - Delete from context
+  - Save context
+- [ ] Integration tests (8+ tests):
+  - Update existing transaction persists changes
+  - Update non-existent throws error
+  - Delete existing transaction removes from DB
+  - Delete non-existent throws error
+  - Update handles all fields correctly
+  - Concurrent updates handled correctly
+
+### Phase 4: Presentation Layer (4/4 tasks)
+
+#### Task 4.1: Update TransactionListView
+- [ ] Make transaction rows tappable (NavigationLink or tap gesture)
+- [ ] Add swipe-to-delete gesture
+- [ ] Show confirmation alert before delete
+- [ ] Wire to EditTransactionView
+- [ ] Refresh list after edit/delete
+
+#### Task 4.2: Create EditTransactionViewModel
+- [ ] Extend TransactionFormViewModel or create new one
+- [ ] Pre-populate form with existing transaction data
+- [ ] Wire to UpdateTransactionUseCase
+- [ ] Wire to DeleteTransactionUseCase
+- [ ] Handle edit success/error states
+- [ ] Handle delete confirmation
+
+#### Task 4.3: Create/Adapt TransactionFormView for Editing
+- [ ] Support both Add and Edit modes
+- [ ] Change title based on mode ("Add" vs "Edit")
+- [ ] Add "Delete" button in edit mode
+- [ ] Pre-fill all fields with transaction data
+- [ ] Show confirmation before delete
+
+#### Task 4.4: Update DependencyContainer
+- [ ] Wire UpdateTransactionUseCase
+- [ ] Wire DeleteTransactionUseCase
+- [ ] Update environment injection
+
+### Phase 5: E2E Testing (2/2 tasks)
+
+#### Task 5.1: Create UpdateTransactionUITests
+- [ ] Test file: UpdateTransactionUITests.swift
+- [ ] 10+ E2E tests:
+  - Tap transaction opens edit form
+  - Form pre-populated with data
+  - Edit amount saves successfully
+  - Edit name saves successfully
+  - Edit currency saves successfully
+  - Edit category saves successfully
+  - Edit date saves successfully
+  - Edit description saves successfully
+  - Cancel discards changes
+  - Validation errors shown
+
+#### Task 5.2: Create DeleteTransactionUITests
+- [ ] Test file: DeleteTransactionUITests.swift
+- [ ] 8+ E2E tests:
+  - Swipe left shows delete button
+  - Tap delete shows confirmation
+  - Confirm delete removes transaction
+  - Cancel delete keeps transaction
+  - Delete from edit form works
+  - Delete last transaction shows empty state
+  - Delete updates list immediately
+
+---
+
+## Progress Tracking
+
+**Iteration 1**: 100% Complete ✅
+**Iteration 2**: 0% Complete (0/8 tasks)
 
 ---
 

@@ -48,4 +48,64 @@ final class CoreDataTransactionRepository: TransactionRepository {
             }
         }
     }
+
+    func update(transaction: Transaction) async throws -> Transaction {
+        return try await context.perform {
+            // Find existing entity by ID
+            let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", transaction.id as CVarArg)
+            fetchRequest.fetchLimit = 1
+
+            do {
+                let entities = try self.context.fetch(fetchRequest)
+
+                guard let entity = entities.first else {
+                    throw RepositoryError.notFound
+                }
+
+                // Update entity fields
+                entity.amount = NSDecimalNumber(decimal: transaction.money.amount)
+                entity.currencyCode = transaction.money.currency.rawValue
+                entity.name = transaction.name
+                entity.categoryRawValue = transaction.category.rawValue
+                entity.date = transaction.date
+                entity.transactionDescription = transaction.description
+
+                // Save context
+                try self.context.save()
+                return transaction
+            } catch let error as RepositoryError {
+                throw error
+            } catch {
+                throw RepositoryError.saveFailed
+            }
+        }
+    }
+
+    func delete(id: UUID) async throws {
+        try await context.perform {
+            // Find existing entity by ID
+            let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            fetchRequest.fetchLimit = 1
+
+            do {
+                let entities = try self.context.fetch(fetchRequest)
+
+                guard let entity = entities.first else {
+                    throw RepositoryError.notFound
+                }
+
+                // Delete entity
+                self.context.delete(entity)
+
+                // Save context
+                try self.context.save()
+            } catch let error as RepositoryError {
+                throw error
+            } catch {
+                throw RepositoryError.deleteFailed
+            }
+        }
+    }
 }

@@ -16,6 +16,14 @@ final class MockTransactionRepository: TransactionRepository {
     var findAllCalled = false
     var findAllResult: Result<[Transaction], Error>?
 
+    var updateCalled = false
+    var updateInput: Transaction?
+    var updateResult: Result<Transaction, Error>?
+
+    var deleteCalled = false
+    var deleteInput: UUID?
+    var deleteResult: Result<Void, Error>?
+
     func create(transaction: Transaction) async throws -> Transaction {
         createCalled = true
         createInput = transaction
@@ -40,6 +48,34 @@ final class MockTransactionRepository: TransactionRepository {
             throw error
         case .none:
             return []
+        }
+    }
+
+    func update(transaction: Transaction) async throws -> Transaction {
+        updateCalled = true
+        updateInput = transaction
+
+        switch updateResult {
+        case .success(let transaction):
+            return transaction
+        case .failure(let error):
+            throw error
+        case .none:
+            return transaction
+        }
+    }
+
+    func delete(id: UUID) async throws {
+        deleteCalled = true
+        deleteInput = id
+
+        switch deleteResult {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        case .none:
+            return
         }
     }
 }

@@ -34,7 +34,7 @@ final class GetTransactionsUITests: XCTestCase {
         // If there are transactions from previous tests, this test may fail
         // Check if empty state exists OR if transactions exist
         let hasEmptyState = app.staticTexts["No Transactions"].exists
-        let hasTransactions = !app.cells.isEmpty
+        let hasTransactions = app.cells.count > 0
 
         // Either empty state should be shown or transactions should be visible
         XCTAssertTrue(hasEmptyState || hasTransactions, "Either empty state or transactions should be visible")
