@@ -75,10 +75,11 @@ Follow this scheme strictly for EACH item in the todo list:
 ### Daily Workflow
 
 1. **Read** `docs/CURRENT_TODO.md` at the start of work
-2. **Update** `docs/CURRENT_TODO.md` after completing each task:
-   - Mark completed items with `[x]` checkbox
-   - Move completed items to `docs/HISTORY_TODO.md`
-   - Update progress percentages
+2. **CRITICAL: Keep `docs/CURRENT_TODO.md` updated continuously:**
+   - Mark completed items with `[x]` checkbox IMMEDIATELY after completion
+   - Update "Currently Working On" section to show active task
+   - Update progress percentages after each task
+   - This provides explicit visibility of progress
 3. **Run tests** after each completion to verify:
    - New code works as expected
    - Existing functionality is not broken
@@ -88,6 +89,7 @@ Follow this scheme strictly for EACH item in the todo list:
    - All tests pass successfully
    - Code follows Clean Architecture principles
    - Changes are committed
+   - **`docs/CURRENT_TODO.md` is updated**
 
 ### Test Execution
 
