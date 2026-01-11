@@ -6,27 +6,28 @@
 //
 
 import SwiftUI
-import SwiftData
 
 @main
 struct BudgetTrackerApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    private let dependencies = DependencyContainer.shared
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.dependencies, dependencies)
         }
-        .modelContainer(sharedModelContainer)
+    }
+}
+
+// MARK: - Environment Key
+
+private struct DependencyContainerKey: EnvironmentKey {
+    static let defaultValue = DependencyContainer.shared
+}
+
+extension EnvironmentValues {
+    var dependencies: DependencyContainer {
+        get { self[DependencyContainerKey.self] }
+        set { self[DependencyContainerKey.self] = newValue }
     }
 }
