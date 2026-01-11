@@ -23,7 +23,38 @@ When starting work, read `docs/CURRENT_TODO.md` to understand current tasks and 
 
 **IMPORTANT**: All todo items MUST be tracked in `docs/CURRENT_TODO.md`, NOT in the TodoWrite tool.
 
-### Workflow
+### Implementation Rules
+
+**ALL implementation must be done ONLY from the `docs/CURRENT_TODO.md` list.**
+
+### Workflow for New Features
+
+When asked to implement a new feature:
+
+1. **Analyze** the feature requirements
+2. **Design** the solution following Clean Architecture principles
+3. **Create** a detailed todo list in `docs/CURRENT_TODO.md`
+4. **ONLY THEN** start implementing
+
+### Implementation Scheme (Per Todo Item)
+
+Follow this scheme strictly for EACH item in the todo list:
+
+1. **Implement** the specified feature from the todo list
+2. **Write Tests** covering the implemented feature according to `docs/005-testing.md`:
+   - Unit tests for Domain/Application layers
+   - Integration tests for Data layer
+   - E2E tests for critical flows (if applicable)
+3. **Run Tests** and ensure nothing is broken:
+   ```bash
+   xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+   ```
+   - If tests fail, fix them immediately
+   - **IMPORTANT**: If tests unrelated to the feature fail, they ARE related - the new feature may have broken them. Fix all failing tests.
+4. **Commit** the changes with a descriptive message
+5. **Move to next** todo item
+
+### Daily Workflow
 
 1. **Read** `docs/CURRENT_TODO.md` at the start of work
 2. **Update** `docs/CURRENT_TODO.md` after completing each task:
@@ -38,6 +69,7 @@ When starting work, read `docs/CURRENT_TODO.md` to understand current tasks and 
    - Unit/integration tests are written
    - All tests pass successfully
    - Code follows Clean Architecture principles
+   - Changes are committed
 
 ### Test Execution
 
