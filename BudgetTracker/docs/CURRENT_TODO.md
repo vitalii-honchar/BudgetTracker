@@ -1,9 +1,9 @@
 # Current Work: V1 Development - Iteration 1
 
-**Last Updated**: January 11, 2026 - 10:05 AM
+**Last Updated**: January 11, 2026 - 11:00 AM
 **Current Iteration**: Iteration 1 - Add Transaction + View List
-**Overall Progress**: 100% (13/13 tasks complete) ✅
-**Status**: ITERATION 1 COMPLETE - Ready for Device Testing
+**Overall Progress**: 100% (All tasks complete) ✅
+**Status**: ITERATION 1 COMPLETE + ENHANCEMENTS - Ready for Device Testing
 
 ---
 
@@ -107,11 +107,13 @@
 
 ## Test Summary
 
-**Current Test Count**: 126 tests
+**Current Test Count**: 154+ tests
 - Domain Layer: 105 tests ✅
 - Application Layer: 11 tests ✅
 - Infrastructure Layer: 10 tests ✅
-- Presentation Layer: 0 tests (UI testing deferred to E2E phase)
+- E2E Tests (UI): 28+ tests ✅
+  - CreateTransactionUITests: 14 tests
+  - GetTransactionsUITests: 14 tests
 
 **All tests passing**: ✅
 
@@ -124,13 +126,21 @@
 - ✅ Complete Application layer (2 use cases + repository interface)
 - ✅ Complete Infrastructure layer (Core Data + Repository impl + DI)
 - ✅ Complete Presentation layer (2 ViewModels + 2 Views)
-- ✅ 126 tests passing across all layers
+- ✅ Currency picker with EUR default (user can select from 5 currencies)
+- ✅ 126 unit/integration tests passing across all layers
+- ✅ 28+ E2E UI tests organized by use case (ZERO MOCKS)
 - ✅ App builds successfully for simulator and device
+
+**Enhancements Added**:
+- ✅ Currency selection in transaction form (EUR, USD, GBP, JPY, UAH)
+- ✅ E2E UI tests split by use case (CreateTransactionUITests, GetTransactionsUITests)
+- ✅ Updated testing documentation (docs/005-testing.md) with E2E requirements
+- ✅ Updated CLAUDE.md with Testing Pyramid requirements
 
 **Next Steps**:
 1. Test on physical iPhone 16 Pro device
-2. Verify complete flow: Launch → Add Transaction → View in List
-3. If approved, proceed to Iteration 2
+2. Verify complete flow: Launch → Add Transaction (with currency) → View in List
+3. If approved, proceed to Iteration 2 (Edit/Delete transactions)
 
 ---
 
