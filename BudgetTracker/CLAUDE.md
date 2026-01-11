@@ -94,13 +94,13 @@ Follow this scheme strictly for EACH item in the todo list:
 After completing each task, run appropriate tests:
 ```bash
 # Run all tests
-xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16e'
 
 # Run specific test suite
-xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -only-testing:BudgetTrackerTests/Domain
+xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16e' -only-testing:BudgetTrackerTests/Domain
 
 # Run specific test class
-xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -only-testing:BudgetTrackerTests/MoneyTests
+xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16e' -only-testing:BudgetTrackerTests/MoneyTests
 ```
 
 ### Documentation Updates
@@ -122,14 +122,16 @@ Follow the testing pyramid approach documented in `docs/005-testing.md`:
 **Run Tests**:
 ```bash
 # All tests
-xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16e'
 
 # Unit tests only
-xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -only-testing:BudgetTrackerTests
+xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16e' -only-testing:BudgetTrackerTests
 
 # UI tests only
-xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -only-testing:BudgetTrackerUITests
+xcodebuild test -scheme BudgetTracker -destination 'platform=iOS Simulator,name=iPhone 16e' -only-testing:BudgetTrackerUITests
 ```
+
+**Physical Device**: iPhone 16 Pro (Vitalii's iPhone 16)
 
 ## Building and Running
 
@@ -148,12 +150,12 @@ open BudgetTracker.xcodeproj
 
 ### Run in Simulator
 ```bash
-xcodebuild -scheme BudgetTracker -project BudgetTracker.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build
+xcodebuild -scheme BudgetTracker -project BudgetTracker.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 16e' build
 ```
 
 ### Run Tests
 ```bash
-xcodebuild -scheme BudgetTracker -project BudgetTracker.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 16 Pro' test
+xcodebuild -scheme BudgetTracker -project BudgetTracker.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 16e' test
 ```
 
 ## Key Technologies
