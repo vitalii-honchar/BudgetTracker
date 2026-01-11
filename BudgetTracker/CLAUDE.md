@@ -91,6 +91,86 @@ Follow this scheme strictly for EACH item in the todo list:
    - Changes are committed
    - **`docs/CURRENT_TODO.md` is updated**
 
+## Testing Strategy
+
+**CRITICAL**: Always follow the Testing Pyramid as specified in `docs/005-testing.md`.
+
+### Testing Requirements
+
+**Every feature must have tests at the appropriate layer:**
+
+1. **Unit Tests** (80% of all tests)
+   - Domain layer: Pure logic, zero dependencies, <10ms per test
+   - Application layer: Use cases with mocked repositories, <50ms per test
+   - Presentation layer: ViewModels with mocked use cases, <50ms per test
+   - Coverage: >90% for Domain, >85% for Application, >80% for Presentation
+
+2. **Integration Tests** (15% of all tests)
+   - Data layer: Repository implementations with in-memory Core Data
+   - Mapper tests: Domain ↔ Entity conversions
+   - Coverage: >75% for Data layer
+   - Speed: 50-200ms per test
+
+3. **E2E Tests / UI Tests** (5% of all tests)
+   - **ZERO MOCKS**: Tests MUST use the full application stack
+   - Real database (Core Data persistent store)
+   - Real use cases (NO MOCKED USE CASES)
+   - Real repositories (NO MOCKED REPOSITORIES)
+   - Real validation logic
+   - Organized by use case: `<UseCaseName>UITests.swift`
+   - Examples: `CreateTransactionUITests.swift`, `GetTransactionsUITests.swift`
+   - Coverage: 5-10 critical flows per use case
+   - Speed: 2-10 seconds per test
+
+### Test Naming Convention
+
+All tests MUST follow this format:
+```
+test_[methodName]_[scenario]_[expectedBehavior]
+```
+
+Examples:
+```swift
+// Unit test
+test_createTransaction_withValidData_returnsTransaction()
+
+// Integration test
+test_coreDataRepository_create_persistsToDatabase()
+
+// E2E test
+test_createTransaction_withAllFields_savesSuccessfully()
+```
+
+### UI Test Structure
+
+UI tests MUST be:
+- Organized by use case in separate files
+- Named as `<UseCaseName>UITests.swift`
+- Using ZERO mocks (full application stack)
+- Testing real user interactions
+
+Example:
+```swift
+/// E2E tests for Create Transaction use case.
+/// NO MOCKS - Tests the full app stack with real database.
+final class CreateTransactionUITests: XCTestCase {
+    var app: XCUIApplication!
+
+    override func setUpWithError() throws {
+        app = XCUIApplication()
+        app.launchArguments = ["--uitesting"]
+        app.launch()
+    }
+
+    @MainActor
+    func test_createTransaction_withAllFields_savesSuccessfully() throws {
+        // Real user interaction with real app
+        // Verifies real database persistence
+        // NO MOCKS ANYWHERE
+    }
+}
+```
+
 ### Test Execution
 
 After completing each task, run appropriate tests:

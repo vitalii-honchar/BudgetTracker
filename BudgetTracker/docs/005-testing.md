@@ -682,73 +682,133 @@ final class TransactionFormViewModelTests: XCTestCase {
 
 ### 5.5 End-to-End Tests (UI Tests)
 
+**IMPORTANT**: UI Tests are E2E (End-to-End) tests that test the ENTIRE application stack with ZERO MOCKS. They use the real database, real networking, and real application logic. These tests verify that the complete user journey works as expected in a production-like environment.
+
 **What to Test**:
 - Critical user flows only
 - Happy path scenarios
-- Real app with real database
+- Real app with real database (NO IN-MEMORY DATABASE)
+- Real use cases (NO MOCKED USE CASES)
+- Real repositories (NO MOCKED REPOSITORIES)
 - User interaction sequences
+- Validation errors with real validation logic
+
+**What NOT to Test**:
+- ❌ Do NOT use mocks of any kind
+- ❌ Do NOT use in-memory databases
+- ❌ Do NOT mock network calls (use real backend or test backend)
+- ❌ Do NOT mock use cases or repositories
+- ❌ Do NOT test framework internals (SwiftUI rendering)
 
 **Characteristics**:
 - **Speed**: 2-10 seconds per test
-- **Dependencies**: Full app stack
-- **Mocking**: None (real system)
-- **Coverage Target**: 5-10 critical flows
+- **Dependencies**: Full app stack (real system)
+- **Mocking**: ZERO MOCKS - tests work like real user
+- **Coverage Target**: 5-10 critical flows per use case
+- **Database**: Real Core Data persistent store (or in-memory for isolation if needed)
+- **Isolation**: Each test should clean up after itself
 
-**Example Structure**:
+**Example Structure** (Organized by Use Case):
 
 ```
 BudgetTrackerUITests/
-├── TransactionFlowTests.swift
-├── ExpensePeriodFlowTests.swift
-├── ReportFlowTests.swift
+├── CreateTransactionUITests.swift      ← E2E tests for Create Transaction use case
+├── GetTransactionsUITests.swift        ← E2E tests for Get Transactions use case
+├── UpdateTransactionUITests.swift      ← E2E tests for Update Transaction use case
+├── DeleteTransactionUITests.swift      ← E2E tests for Delete Transaction use case
+├── GenerateReportUITests.swift         ← E2E tests for Generate Report use case
 └── TestHelpers/
     └── UITestHelpers.swift
+
+Naming Convention: <UseCaseName>UITests.swift
 ```
 
-**Example Test**:
+**File Naming Convention**:
+- Format: `<UseCaseName>UITests.swift`
+- Examples:
+  - `CreateTransactionUITests.swift` - Tests AddTransaction use case
+  - `GetTransactionsUITests.swift` - Tests ViewTransactionList use case
+  - `UpdateTransactionUITests.swift` - Tests EditTransaction use case
+
+**Example Test** (CreateTransactionUITests.swift):
 
 ```swift
 import XCTest
 
-final class TransactionFlowTests: XCTestCase {
+/// E2E tests for Create Transaction use case.
+/// NO MOCKS - Tests the full app stack with real database.
+final class CreateTransactionUITests: XCTestCase {
 
     var app: XCUIApplication!
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchArguments = ["--uitesting"]
         app.launch()
     }
 
-    // MARK: - Create Transaction Flow
+    override func tearDownWithError() throws {
+        app = nil
+    }
 
-    func test_userCanCreateTransaction_endToEnd() {
-        // Navigate to Transactions tab
-        app.tabBars.buttons["Transactions"].tap()
+    // MARK: - Happy Path Tests
 
-        // Tap add button
-        app.navigationBars.buttons["Add"].tap()
+    @MainActor
+    func test_createTransaction_withAllFields_savesSuccessfully() throws {
+        // Open add transaction form
+        let addButton = app.navigationBars.buttons.element(boundBy: 0)
+        addButton.tap()
 
-        // Fill form
+        // Fill amount
         let amountField = app.textFields["Amount"]
         amountField.tap()
         amountField.typeText("42.50")
 
-        let nameField = app.textFields["Transaction Name"]
+        // Fill name
+        let nameField = app.textFields["Name"]
         nameField.tap()
         nameField.typeText("Coffee at Starbucks")
 
+        // Select currency (EUR is default)
+        // Leave as default or tap to change
+
         // Select category
-        app.buttons["Food"].tap()
+        let categoryPicker = app.buttons["Category"]
+        categoryPicker.tap()
+
+        // Optional: Add description
+        let descriptionEditor = app.textViews.element(boundBy: 0)
+        descriptionEditor.tap()
+        descriptionEditor.typeText("Morning coffee")
 
         // Save
-        app.buttons["Save & Close"].tap()
+        let saveButton = app.navigationBars.buttons["Save"]
+        saveButton.tap()
 
-        // Verify transaction appears in list
+        // Verify transaction appears in list (real database, no mocks!)
         XCTAssertTrue(app.staticTexts["Coffee at Starbucks"].exists)
-        XCTAssertTrue(app.staticTexts["$42.50"].exists)
+        XCTAssertTrue(app.staticTexts["€42.50"].exists || app.staticTexts["42.50"].exists)
+    }
+
+    // MARK: - Validation Error Tests
+
+    @MainActor
+    func test_createTransaction_withEmptyAmount_showsError() throws {
+        let addButton = app.navigationBars.buttons.element(boundBy: 0)
+        addButton.tap()
+
+        // Fill only name
+        let nameField = app.textFields["Name"]
+        nameField.tap()
+        nameField.typeText("Test")
+
+        // Try to save
+        let saveButton = app.navigationBars.buttons["Save"]
+        saveButton.tap()
+
+        // Verify real validation error (not mocked!)
+        XCTAssertTrue(app.staticTexts["Please enter a valid amount"].exists)
     }
 
     // MARK: - Edit Transaction Flow
