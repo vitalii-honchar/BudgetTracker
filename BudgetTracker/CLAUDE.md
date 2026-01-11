@@ -27,14 +27,32 @@ When starting work, read `docs/CURRENT_TODO.md` to understand current tasks and 
 
 **ALL implementation must be done ONLY from the `docs/CURRENT_TODO.md` list.**
 
+### Iterative Development Approach
+
+**Development follows vertical-slice iterations:**
+
+- Each iteration delivers a **working app** testable on a physical device
+- Each iteration goes through **ALL layers**: Domain → Data → Application → Infrastructure → Presentation
+- Each iteration adds **ONE focused capability** (e.g., "Add Transaction", "Edit Transaction")
+- **Must test on device** after each iteration before moving to next
+- Following **Continuous Delivery (CD)** principles: every iteration is deployable
+
+**Example Iterations:**
+- Iteration 1: Add Transaction + View List → Working app with basic functionality
+- Iteration 2: Edit Transaction → Working app with CRUD (partial)
+- Iteration 3: Delete Transaction → Working app with full CRUD
+- Iteration 4+: Reports, Analytics, Advanced Features
+
+**Key Principle:** After each iteration, you have a working application that can be deployed and used, even if it has limited features.
+
 ### Workflow for New Features
 
 When asked to implement a new feature:
 
 1. **Analyze** the feature requirements
 2. **Design** the solution following Clean Architecture principles
-3. **Create** a detailed todo list in `docs/CURRENT_TODO.md`
-4. **ONLY THEN** start implementing
+3. **Create** a detailed todo list in `docs/CURRENT_TODO.md` (organized by iterations)
+4. **ONLY THEN** start implementing iteration by iteration
 
 ### Implementation Scheme (Per Todo Item)
 
