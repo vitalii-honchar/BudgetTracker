@@ -19,8 +19,19 @@ struct TransactionFormView: View {
         NavigationStack {
             Form {
                 Section("Transaction Details") {
-                    TextField("Amount", text: $viewModel.amount)
-                        .keyboardType(.decimalPad)
+                    HStack {
+                        TextField("Amount", text: $viewModel.amount)
+                            .keyboardType(.decimalPad)
+
+                        Picker("Currency", selection: $viewModel.selectedCurrency) {
+                            ForEach(Currency.allCases, id: \.self) { currency in
+                                Text(currency.symbol)
+                                    .tag(currency)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(width: 60)
+                    }
 
                     TextField("Name", text: $viewModel.name)
 

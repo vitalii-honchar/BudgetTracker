@@ -13,6 +13,7 @@ import Combine
 final class TransactionFormViewModel: ObservableObject {
     @Published var amount: String = ""
     @Published var name: String = ""
+    @Published var selectedCurrency: Currency = .EUR
     @Published var selectedCategory: Category = .food
     @Published var date: Date = Date()
     @Published var transactionDescription: String = ""
@@ -48,7 +49,7 @@ final class TransactionFormViewModel: ObservableObject {
                 }
 
                 // Create Money
-                let money = try Money(amount: amountDecimal, currency: .USD)
+                let money = try Money(amount: amountDecimal, currency: selectedCurrency)
 
                 // Create Transaction
                 let transaction = try Transaction(
@@ -77,6 +78,7 @@ final class TransactionFormViewModel: ObservableObject {
     private func clearForm() {
         amount = ""
         name = ""
+        selectedCurrency = .EUR
         selectedCategory = .food
         date = Date()
         transactionDescription = ""
