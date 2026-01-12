@@ -143,7 +143,7 @@
 
 ---
 
-## Iteration 2: Edit & Delete Transactions (4/8 phases complete - 50%)
+## Iteration 2: Edit & Delete Transactions (6/8 phases complete - 75%)
 
 **Goal**: Deliver working app where users can edit existing transactions and delete them.
 
@@ -210,34 +210,34 @@ All domain entities (Transaction, Money, Category, Currency) already support edi
   - Delete non-existent throws error
   - Delete removes only specified transaction
 
-### Phase 4: Presentation Layer (4/4 tasks)
+### Phase 4: Presentation Layer (4/4 complete) ✅
 
-#### Task 4.1: Update TransactionListView
-- [ ] Make transaction rows tappable (NavigationLink or tap gesture)
-- [ ] Add swipe-to-delete gesture
-- [ ] Show confirmation alert before delete
-- [ ] Wire to EditTransactionView
-- [ ] Refresh list after edit/delete
+#### Task 4.1: Update TransactionListView ✅
+- [x] Make transaction rows tappable (onTapGesture)
+- [x] Add swipe-to-delete gesture
+- [x] Show confirmation alert before delete
+- [x] Wire to edit sheet with TransactionFormView
+- [x] Refresh list after edit/delete
 
-#### Task 4.2: Create EditTransactionViewModel
-- [ ] Extend TransactionFormViewModel or create new one
-- [ ] Pre-populate form with existing transaction data
-- [ ] Wire to UpdateTransactionUseCase
-- [ ] Wire to DeleteTransactionUseCase
-- [ ] Handle edit success/error states
-- [ ] Handle delete confirmation
+#### Task 4.2: Extend TransactionFormViewModel ✅
+- [x] Extended TransactionFormViewModel to support edit mode
+- [x] Pre-populate form with existing transaction data
+- [x] Wire to UpdateTransactionUseCase
+- [x] Wire to DeleteTransactionUseCase
+- [x] Handle edit success/error states
+- [x] Handle delete confirmation
 
-#### Task 4.3: Create/Adapt TransactionFormView for Editing
-- [ ] Support both Add and Edit modes
-- [ ] Change title based on mode ("Add" vs "Edit")
-- [ ] Add "Delete" button in edit mode
-- [ ] Pre-fill all fields with transaction data
-- [ ] Show confirmation before delete
+#### Task 4.3: Update TransactionFormView for Editing ✅
+- [x] Support both Add and Edit modes (isEditMode property)
+- [x] Dynamic title based on mode ("Add" vs "Edit Transaction")
+- [x] Delete button in toolbar (edit mode only)
+- [x] Pre-fill all fields with transaction data
+- [x] Delete confirmation alert
 
-#### Task 4.4: Update DependencyContainer
-- [ ] Wire UpdateTransactionUseCase
-- [ ] Wire DeleteTransactionUseCase
-- [ ] Update environment injection
+#### Task 4.4: Update DependencyContainer ✅
+- [x] Wire UpdateTransactionUseCase
+- [x] Wire DeleteTransactionUseCase
+- [x] Update ContentView to pass deleteTransactionUseCase
 
 ### Phase 5: E2E Testing (2/2 tasks)
 
@@ -271,7 +271,7 @@ All domain entities (Transaction, Money, Category, Currency) already support edi
 ## Progress Tracking
 
 **Iteration 1**: 100% Complete ✅
-**Iteration 2**: 50% Complete (4/8 phases) - Application & Infrastructure complete ✅
+**Iteration 2**: 75% Complete (6/8 phases) - Application, Infrastructure & Presentation complete ✅
 
 ---
 
