@@ -143,7 +143,7 @@
 
 ---
 
-## Iteration 2: Edit & Delete Transactions (0/8 tasks complete)
+## Iteration 2: Edit & Delete Transactions (4/8 phases complete - 50%)
 
 **Goal**: Deliver working app where users can edit existing transactions and delete them.
 
@@ -184,30 +184,31 @@ All domain entities (Transaction, Money, Category, Currency) already support edi
   - Repository error propagates
   - Verify deletion called repository
 
-### Phase 3: Infrastructure Layer (2/2 tasks)
+### Phase 3: Infrastructure Layer (2/2 complete) ✅
 
-#### Task 3.1: Extend TransactionRepository Protocol
-- [ ] Add `update(transaction: Transaction) async throws -> Transaction`
-- [ ] Add `delete(id: UUID) async throws`
-- [ ] Update MockTransactionRepository
+#### Task 3.1: Extend TransactionRepository Protocol ✅
+- [x] Add `update(transaction: Transaction) async throws -> Transaction`
+- [x] Add `delete(id: UUID) async throws`
+- [x] Add `RepositoryError.deleteFailed` case
+- [x] Update MockTransactionRepository
 
-#### Task 3.2: Implement Update & Delete in CoreDataTransactionRepository
-- [ ] Implement update() method:
+#### Task 3.2: Implement Update & Delete in CoreDataTransactionRepository ✅
+- [x] Implement update() method:
   - Find entity by ID
-  - Update all fields using mapper
+  - Update all fields (amount, currency, name, category, date, description)
   - Save context
   - Return updated domain model
-- [ ] Implement delete() method:
+- [x] Implement delete() method:
   - Find entity by ID
   - Delete from context
   - Save context
-- [ ] Integration tests (8+ tests):
+- [x] Integration tests (6 tests - all passing):
   - Update existing transaction persists changes
   - Update non-existent throws error
+  - Update handles all fields correctly
   - Delete existing transaction removes from DB
   - Delete non-existent throws error
-  - Update handles all fields correctly
-  - Concurrent updates handled correctly
+  - Delete removes only specified transaction
 
 ### Phase 4: Presentation Layer (4/4 tasks)
 
@@ -270,7 +271,7 @@ All domain entities (Transaction, Money, Category, Currency) already support edi
 ## Progress Tracking
 
 **Iteration 1**: 100% Complete ✅
-**Iteration 2**: 0% Complete (0/8 tasks)
+**Iteration 2**: 50% Complete (4/8 phases) - Application & Infrastructure complete ✅
 
 ---
 

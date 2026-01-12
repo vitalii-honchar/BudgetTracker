@@ -13,7 +13,8 @@ struct ContentView: View {
     var body: some View {
         TransactionListView(
             viewModel: TransactionListViewModel(
-                getTransactionsUseCase: dependencies.getTransactionsUseCase
+                getTransactionsUseCase: dependencies.getTransactionsUseCase,
+                deleteTransactionUseCase: dependencies.deleteTransactionUseCase
             )
         )
     }

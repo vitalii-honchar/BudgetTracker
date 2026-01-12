@@ -11,6 +11,10 @@ struct TransactionListView: View {
     @Environment(\.dependencies) private var dependencies
     @StateObject private var viewModel: TransactionListViewModel
     @State private var showingAddTransaction = false
+    @State private var showingEditTransaction = false
+    @State private var transactionToEdit: Transaction?
+    @State private var transactionToDelete: Transaction?
+    @State private var showingDeleteConfirmation = false
 
     init(viewModel: TransactionListViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -42,9 +46,37 @@ struct TransactionListView: View {
             } content: {
                 TransactionFormView(
                     viewModel: TransactionFormViewModel(
-                        createTransactionUseCase: dependencies.createTransactionUseCase
+                        createTransactionUseCase: dependencies.createTransactionUseCase,
+                        updateTransactionUseCase: dependencies.updateTransactionUseCase,
+                        deleteTransactionUseCase: dependencies.deleteTransactionUseCase
                     )
                 )
+            }
+            .sheet(isPresented: $showingEditTransaction) {
+                viewModel.loadTransactions()
+            } content: {
+                if let transaction = transactionToEdit {
+                    TransactionFormView(
+                        viewModel: TransactionFormViewModel(
+                            createTransactionUseCase: dependencies.createTransactionUseCase,
+                            updateTransactionUseCase: dependencies.updateTransactionUseCase,
+                            deleteTransactionUseCase: dependencies.deleteTransactionUseCase,
+                            transactionToEdit: transaction
+                        )
+                    )
+                }
+            }
+            .alert("Delete Transaction", isPresented: $showingDeleteConfirmation) {
+                Button("Cancel", role: .cancel) {}
+                Button("Delete", role: .destructive) {
+                    if let transaction = transactionToDelete {
+                        viewModel.deleteTransaction(transaction)
+                    }
+                }
+            } message: {
+                if let transaction = transactionToDelete {
+                    Text("Are you sure you want to delete '\(transaction.name)'?")
+                }
             }
             .onAppear {
                 viewModel.loadTransactions()
@@ -67,6 +99,19 @@ struct TransactionListView: View {
     private var transactionsList: some View {
         List(viewModel.transactions) { transaction in
             TransactionRow(transaction: transaction)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    transactionToEdit = transaction
+                    showingEditTransaction = true
+                }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        transactionToDelete = transaction
+                        showingDeleteConfirmation = true
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
         }
     }
 }

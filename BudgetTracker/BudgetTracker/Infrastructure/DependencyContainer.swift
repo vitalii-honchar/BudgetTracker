@@ -31,5 +31,13 @@ final class DependencyContainer {
         return GetTransactionsUseCase(repository: transactionRepository)
     }()
 
+    lazy var updateTransactionUseCase: UpdateTransactionUseCase = {
+        return UpdateTransactionUseCase(repository: transactionRepository)
+    }()
+
+    lazy var deleteTransactionUseCase: DeleteTransactionUseCase = {
+        return DeleteTransactionUseCase(repository: transactionRepository)
+    }()
+
     private init() {}
 }

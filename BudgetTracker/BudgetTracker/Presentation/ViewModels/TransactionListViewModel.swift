@@ -16,9 +16,11 @@ final class TransactionListViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     private let getTransactionsUseCase: GetTransactionsUseCase
+    private let deleteTransactionUseCase: DeleteTransactionUseCase
 
-    init(getTransactionsUseCase: GetTransactionsUseCase) {
+    init(getTransactionsUseCase: GetTransactionsUseCase, deleteTransactionUseCase: DeleteTransactionUseCase) {
         self.getTransactionsUseCase = getTransactionsUseCase
+        self.deleteTransactionUseCase = deleteTransactionUseCase
     }
 
     func loadTransactions() {
@@ -33,6 +35,20 @@ final class TransactionListViewModel: ObservableObject {
             }
 
             isLoading = false
+        }
+    }
+
+    func deleteTransaction(_ transaction: Transaction) {
+        Task {
+            errorMessage = nil
+
+            do {
+                try await deleteTransactionUseCase.execute(id: transaction.id)
+                // Reload transactions after successful deletion
+                loadTransactions()
+            } catch {
+                errorMessage = "Failed to delete transaction: \(error.localizedDescription)"
+            }
         }
     }
 }

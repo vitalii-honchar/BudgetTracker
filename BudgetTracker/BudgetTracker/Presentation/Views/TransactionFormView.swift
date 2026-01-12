@@ -10,6 +10,7 @@ import SwiftUI
 struct TransactionFormView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: TransactionFormViewModel
+    @State private var showingDeleteConfirmation = false
 
     init(viewModel: TransactionFormViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -60,7 +61,7 @@ struct TransactionFormView: View {
                     }
                 }
             }
-            .navigationTitle("Add Transaction")
+            .navigationTitle(viewModel.isEditMode ? "Edit Transaction" : "Add Transaction")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -69,8 +70,18 @@ struct TransactionFormView: View {
                     }
                 }
 
+                if viewModel.isEditMode {
+                    ToolbarItem(placement: .destructiveAction) {
+                        Button(role: .destructive) {
+                            showingDeleteConfirmation = true
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                }
+
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(viewModel.isEditMode ? "Update" : "Save") {
                         viewModel.saveTransaction()
                     }
                     .disabled(viewModel.isLoading)
@@ -80,6 +91,14 @@ struct TransactionFormView: View {
                 if viewModel.isLoading {
                     ProgressView()
                 }
+            }
+            .alert("Delete Transaction", isPresented: $showingDeleteConfirmation) {
+                Button("Cancel", role: .cancel) {}
+                Button("Delete", role: .destructive) {
+                    viewModel.deleteTransaction()
+                }
+            } message: {
+                Text("Are you sure you want to delete this transaction? This action cannot be undone.")
             }
             .onChange(of: viewModel.showSuccess) { _, newValue in
                 if newValue {
