@@ -276,10 +276,269 @@ All domain entities (Transaction, Money, Category, Currency) already support edi
 
 ---
 
+## Iteration 3: Expense Periods (0/5 phases complete - 0%)
+
+**Goal**: Implement the top-level "Expense Period" abstraction for organizing transactions into logical groups (e.g., "March 2024", "Vacation Budget").
+
+**Why This Iteration?**
+- Requirements document specifies Expense Periods as "top-level organizational abstraction"
+- Foundation for spending reports and analytics
+- Enables period-based transaction filtering
+- Database schema already designed for this feature
+
+**Completion Criteria**:
+- [ ] ExpensePeriod domain entity with validation
+- [ ] 5 use cases: Create, Get, Update, Delete, GetTransactionsByPeriod
+- [ ] Core Data migration adding ExpensePeriodEntity
+- [ ] Period-transaction relationship (one-to-many)
+- [ ] UI for period CRUD operations
+- [ ] Transaction can be assigned to period
+- [ ] Filter transactions by period
+- [ ] All tests pass (~108 new tests expected)
+- [ ] App builds and runs on device
+
+---
+
+### Phase 1: Domain Layer (0/2 tasks)
+
+#### Task 1.1: Create ExpensePeriod Entity
+- [ ] Define ExpensePeriod struct with:
+  - id: UUID
+  - name: String (1-100 chars)
+  - startDate: Date
+  - endDate: Date? (optional, nil = ongoing)
+  - createdAt: Date
+  - updatedAt: Date
+- [ ] Business rules validation:
+  - Name not empty, max 100 chars
+  - Start date required
+  - End date must be after start date (if provided)
+- [ ] Unit tests (15+ tests):
+  - Creation with valid data
+  - Validation: empty name, long name
+  - Validation: missing start date
+  - Validation: end date before start date
+  - Equality and Identifiable conformance
+  - Edge cases
+
+#### Task 1.2: Update Transaction Entity (Optional)
+- [ ] Add optional period relationship concept
+- [ ] Verify Transaction can reference ExpensePeriod (design level)
+
+---
+
+### Phase 2: Application Layer (0/6 tasks)
+
+#### Task 2.1: Define ExpensePeriodRepository Protocol
+- [ ] Protocol with methods:
+  - `create(period:) async throws -> ExpensePeriod`
+  - `findAll() async throws -> [ExpensePeriod]`
+  - `findById(id:) async throws -> ExpensePeriod?`
+  - `update(period:) async throws -> ExpensePeriod`
+  - `delete(id:) async throws`
+- [ ] Add error cases to RepositoryError if needed
+
+#### Task 2.2: Create CreateExpensePeriodUseCase
+- [ ] Implement execute(period:) method
+- [ ] Unit tests (5+ tests):
+  - Create with valid data
+  - Repository error propagation
+  - Input validation
+
+#### Task 2.3: Create GetExpensePeriodsUseCase
+- [ ] Implement execute() method (returns all periods)
+- [ ] Sort by startDate descending (newest first)
+- [ ] Unit tests (5+ tests):
+  - Returns all periods sorted
+  - Empty list handling
+  - Repository error propagation
+
+#### Task 2.4: Create UpdateExpensePeriodUseCase
+- [ ] Implement execute(period:) method
+- [ ] Unit tests (5+ tests):
+  - Update with valid data
+  - Not found error
+  - Repository error propagation
+
+#### Task 2.5: Create DeleteExpensePeriodUseCase
+- [ ] Implement execute(id:) method
+- [ ] Unit tests (5+ tests):
+  - Delete existing period
+  - Not found error
+  - Repository error propagation
+
+#### Task 2.6: Update TransactionRepository Protocol
+- [ ] Add method: `assignToPeriod(transactionId: UUID, periodId: UUID?) async throws`
+- [ ] Add method: `findByPeriod(periodId: UUID) async throws -> [Transaction]`
+- [ ] Update MockTransactionRepository
+
+---
+
+### Phase 3: Infrastructure Layer (0/5 tasks)
+
+#### Task 3.1: Create ExpensePeriodEntity (Core Data)
+- [ ] Add to BudgetTracker.xcdatamodeld
+- [ ] Attributes: id, name, startDate, endDate, createdAt, updatedAt
+- [ ] Relationship: transactions (one-to-many to TransactionEntity)
+- [ ] Configure delete rule: Nullify (unlink transactions, don't delete them)
+
+#### Task 3.2: Update TransactionEntity
+- [ ] Add relationship: period (many-to-one to ExpensePeriodEntity)
+- [ ] Optional relationship (nullable)
+- [ ] Delete rule: Nullify
+
+#### Task 3.3: Create ExpensePeriodMapper
+- [ ] Implement toDomain(entity:) -> ExpensePeriod
+- [ ] Implement toEntity(period:, context:) -> ExpensePeriodEntity
+- [ ] Unit tests (10+ tests):
+  - Domain → Entity conversion
+  - Entity → Domain conversion
+  - Nil handling for optional fields
+  - Relationship preservation
+
+#### Task 3.4: Implement CoreDataExpensePeriodRepository
+- [ ] Implement all CRUD operations
+- [ ] Handle Core Data context properly
+- [ ] Integration tests (15+ tests):
+  - Create persists to database
+  - FindAll returns all periods
+  - FindById returns correct period
+  - Update modifies existing period
+  - Delete removes period
+  - Relationships work correctly
+
+#### Task 3.5: Update CoreDataTransactionRepository
+- [ ] Implement assignToPeriod(transactionId:, periodId:)
+- [ ] Implement findByPeriod(periodId:)
+- [ ] Integration tests (5+ tests):
+  - Assign transaction to period
+  - Unassign transaction (nil period)
+  - Filter by period returns correct transactions
+  - Period deletion nullifies transaction.period
+
+---
+
+### Phase 4: Presentation Layer (0/8 tasks)
+
+#### Task 4.1: Create PeriodListViewModel
+- [ ] @Published var periods: [ExpensePeriod]
+- [ ] @Published var isLoading: Bool
+- [ ] @Published var errorMessage: String?
+- [ ] func loadPeriods()
+- [ ] func deletePeriod(_ period: ExpensePeriod)
+- [ ] Wire to GetExpensePeriodsUseCase
+- [ ] Wire to DeleteExpensePeriodUseCase
+
+#### Task 4.2: Create PeriodFormViewModel
+- [ ] @Published form fields (name, startDate, endDate)
+- [ ] isEditMode support
+- [ ] func savePeriod()
+- [ ] Validation logic
+- [ ] Wire to CreateExpensePeriodUseCase
+- [ ] Wire to UpdateExpensePeriodUseCase
+
+#### Task 4.3: Create PeriodListView
+- [ ] List of periods with PeriodRow
+- [ ] Empty state ("No Periods")
+- [ ] Add button in toolbar
+- [ ] Swipe to delete
+- [ ] Tap to navigate to period details
+- [ ] Show period summary (date range, transaction count)
+
+#### Task 4.4: Create PeriodFormView
+- [ ] Form fields: name, start date, end date (optional)
+- [ ] Validation error messages
+- [ ] Save/Update button
+- [ ] Cancel button
+- [ ] Dynamic title (Add/Edit Period)
+
+#### Task 4.5: Create PeriodDetailView
+- [ ] Period info header (name, dates)
+- [ ] List of transactions in this period
+- [ ] Summary (total spent, transaction count)
+- [ ] Edit button in toolbar
+- [ ] Empty state if no transactions
+
+#### Task 4.6: Update TransactionFormViewModel
+- [ ] Add selectedPeriod: ExpensePeriod?
+- [ ] Add period picker
+- [ ] Save period assignment with transaction
+
+#### Task 4.7: Update TransactionFormView
+- [ ] Add period picker section
+- [ ] Show "None" option (no period)
+- [ ] Show all available periods
+
+#### Task 4.8: Update DependencyContainer
+- [ ] Wire CreateExpensePeriodUseCase
+- [ ] Wire GetExpensePeriodsUseCase
+- [ ] Wire UpdateExpensePeriodUseCase
+- [ ] Wire DeleteExpensePeriodUseCase
+- [ ] Wire CoreDataExpensePeriodRepository
+
+---
+
+### Phase 5: E2E Testing (0/5 tasks)
+
+#### Task 5.1: Create CreateExpensePeriodUITests
+- [ ] Test file: CreateExpensePeriodUITests.swift
+- [ ] 10+ E2E tests:
+  - Open create period form
+  - Create period with name only
+  - Create period with start and end date
+  - Validation: empty name shows error
+  - Validation: end before start shows error
+  - Cancel discards changes
+  - Created period appears in list
+
+#### Task 5.2: Create GetExpensePeriodsUITests
+- [ ] Test file: GetExpensePeriodsUITests.swift
+- [ ] 8+ E2E tests:
+  - List shows all periods
+  - Empty state when no periods
+  - Tap period navigates to details
+  - Periods sorted by date
+  - Add button exists
+
+#### Task 5.3: Create UpdateExpensePeriodUITests
+- [ ] Test file: UpdateExpensePeriodUITests.swift
+- [ ] 10+ E2E tests:
+  - Tap period opens details
+  - Edit button opens form
+  - Edit name saves successfully
+  - Edit dates saves successfully
+  - Cancel discards changes
+  - Validation errors shown
+
+#### Task 5.4: Create DeleteExpensePeriodUITests
+- [ ] Test file: DeleteExpensePeriodUITests.swift
+- [ ] 8+ E2E tests:
+  - Swipe shows delete button
+  - Delete shows confirmation
+  - Confirm deletes period
+  - Cancel keeps period
+  - Transactions remain after period deletion
+
+#### Task 5.5: Create PeriodTransactionLinkingUITests
+- [ ] Test file: PeriodTransactionLinkingUITests.swift
+- [ ] 12+ E2E tests:
+  - Create transaction assigned to period
+  - Transaction appears in period details
+  - Edit transaction to change period
+  - Edit transaction to remove period
+  - Filter transactions by period
+  - "All" filter shows all transactions
+
+---
+
 ## Progress Tracking
 
 **Iteration 1**: 100% Complete ✅
 **Iteration 2**: 100% Complete ✅ - All 8 phases complete!
+**Iteration 3**: 0% Complete (0/5 phases) - Ready to start
+
+**Current Test Count**: 161 tests
+**Target Test Count after Iteration 3**: ~269 tests (+108)
 
 ---
 
